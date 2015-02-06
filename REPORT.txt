@@ -1,0 +1,91 @@
+CSC418 Assignment 1 REPORT
+
+Name: Ryan Wooyang Lee
+
+With OPENGL and C++, I draw a penguin as Assignment 1 addressed.
+Following files/codes are modified in order to achieve the Part2 goal.
+
+Added back ground parts for better graphic.
+
+
+1. CHECKLIST
+
+Answered all questions. Worked alone and completed all parts.
+
+
+2. main.cpp
+
+Default window size is changed in order to put whole figure of the penguin 
+can be fit into the window.
+int width = 800;
+int height = 1500;
+
+
+3. GLWidget.h
+
+Implemented classes for drawing objects, vertices are calculated by hand
+- class UnitSquare, UnitSquare2 - Default unit square class which is used for drawing legs
+- class UnitCircle - Default unit circle class which is used for all circle objects(eyes, hinges)
+- class BodySquare, BodySquare2 - In order to draw body (polygon), I created two squares to make the body. 
+- class ArmSquare - In order to draw arm, I created one square to make
+- class HeadSquare, HeadSquare2 - In order to draw head (polygon), I created two squares to make the head.
+- class UpperMouthSquare, LowerMouthSquare - I created two squares to make the upper and lower mouth.
+
+Added static const variables for min and max (rotation)
+- JOINT_MIN, JOINT_MAX, JOINT_MIN2, JOINT_MAX2 - min and max for upper legs, the first one is for left leg, the second one is for right leg
+- LOWER_JOINT_MIN, LOWER_JOINT_MAX, LOWER_JOINT_MIN2, LOWER_JOINT_MAX2 - min and max for lower legs, the first one is for left leg, the second one is for right leg
+- JOINT_MIN_ARM, JOINT_MAX_ARM - min and max for arm
+- JOINT_MIN_HEAD, JOINT_MAX_HEAD - min and max for head
+- MOVE_MIN, MOVE_MAX, MOVE_MIN2, MOVE_MAX2 - min and max for body movements, the first group is X movement, the second group is Y movement
+- MOUTH_MOVE_MIN, MOUTH_MOVE_MAX - min and max for lib movements (Y coordinate)
+
+Added joint angle functions for all rotation parts, they connect with the slides in windows
+- setJointAngle - set angle of left upper leg with input from slide
+- setJointAngle2 - set angle of right upper leg with input from slide
+- setJointAngle_lower_leg - set angle of left lower legs with input from slide
+- setJointAngle_lower_leg2 - set angle of left lower legs with input from slide
+- setJointAngle_arm - set angle of arm with input from slide
+- setJointAngle_head - set angle of head with input from slide
+- setMovement_Mouth - set movement (Y coordinate) of mouth with input from slide
+- setMovement_Body_X - set movement (X coordinate) of body with input from slide
+- setMovement_Body_Y - set movement (Y coordinate) of body with input from slide
+
+Declared class objects and functions
+
+
+4. GLWidget.cpp
+
+At GLWidget::initializeGL, initialize all objects.
+For example, m_body_square.initialize(m_gl_state.VERTEX_POSITION_SHADER_LOCATION), it sets location as VERTEXT_POSITION.
+
+At GLWidget::timerEvent, declared angle variables for joints.
+For example, m_joint_angle_lower_leg will be calculated with joint_rot_t, MIN, and MAX. It will be use in rotation. joint_rot_t is calculated with sin function. So it changes over animation_frame. All angles are different in order to show dynamic animation.
+
+At GLWidget::paintGL, animations are set. Added constant variables for scale. Stacks are architectured like following:
+BODY MOVE
+- BODY
+ - HEAD
+  - HEAD rotation
+  - HEAD Drawing (Upper and Lower MOUTH, JOINT CIRCLE, EYES)
+ - ARM
+  - ARM rotation
+  - ARM Drawing (ARM, JOINT CIRCLE)
+ - LEFT LEG
+  - LEFT UPPER rotation
+  - LEG Drawing (UPPER LEG, JOINT CIRCLE, LOWER_LEG (LOWER LEG roation, LOWER LEG, Joint circle))
+ - RIGHT LEG (same as LEFT LEG)
+
+There are 9 points moving.
+1. Head
+2. Beak (up and down)
+3,4. Body (x and y directions - up and down, left and right)
+5,6. Upper legs (left and right)
+7,8. Lower legs (left and right)
+9. Arm
+
+Added background for better picture.
+
+
+5. MainWindow.h
+
+Added sliders to control the joint angles for each hinges + body movements + mouth movement. Set each sliders values (setValue(0)). Declared sliders at the end.
